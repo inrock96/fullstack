@@ -15,12 +15,12 @@ const Statistics = (props) => {
       <div>
         <h1>Statistics</h1>
         <div>
-          <h2>good</h2><Display value={props.good}></Display>
-          <h2>neutral</h2><Display value={props.neutral}></Display>
-          <h2>bad</h2><Display value={props.bad}></Display>
-          <h2>all</h2><Display value={props.all}></Display>
-          <h2>average</h2><Display value={props.average}></Display>
-          <h2>positive</h2><Display value={props.positivePercent + "%"}></Display>
+          <Statistic text = "good" value={props.good}></Statistic>
+          <Statistic text = "neutral" value={props.neutral}></Statistic>
+          <Statistic text = "bad" value={props.bad}></Statistic>
+          <Statistic text = "all" value={props.all}></Statistic>
+          <Statistic text = "average" value={props.average}></Statistic>
+          <Statistic text = "percent" value={props.positivePercent+"%"}></Statistic>
         </div>
       </div>
     )
@@ -32,6 +32,12 @@ const Statistics = (props) => {
   )
 
 }
+const Statistic = (props)=>(
+  <div>
+    <h2>props.text</h2>
+    <Display value={props.value}></Display>
+  </div>
+)
 const App = () => {
   // save clicks of each button to its own state
   const [good, setGood] = useState(0)
