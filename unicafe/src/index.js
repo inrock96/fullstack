@@ -18,7 +18,6 @@ const Statistics = (props) => {
           <table>
             <tbody>
 
-
               <Statistic text="good" value={props.good}></Statistic>
               <Statistic text="neutral" value={props.neutral}></Statistic>
               <Statistic text="bad" value={props.bad}></Statistic>

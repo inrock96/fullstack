@@ -6,11 +6,21 @@ import ReactDOM from 'react-dom'
 const Button = (props) => (
     <button onClick={props.handleClick}>{props.text}</button>
 )
+
 const App = (props) => {
   const [selected, setSelected] = useState(0)
-
+  const [points, setPoints] = useState(new Uint8Array(6));
   const handleSelectClick = () => {
     setSelected(Math.floor(Math.random()*anecdotes.length))
+  }
+
+  const handleVoteClick=()=>{
+    const copy ={ ...points}
+    const copy2 = points
+    copy[selected]+=1
+    copy2[selected]+=1
+    console.log(copy,copy2)
+    setPoints(copy)
   }
 
   return (
@@ -18,7 +28,11 @@ const App = (props) => {
       <h1>Anecdotes</h1>
       {props.anecdotes[selected]}
       <br></br>
+      <br />
+      has {points[selected]} points
+      <br />
       <Button text="next" handleClick={handleSelectClick}></Button>
+      <Button text="vote" handleClick={handleVoteClick}></Button>
     </div>
   )
 }
