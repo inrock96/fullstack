@@ -12,10 +12,26 @@ const App = () => {
   }
   const handleAdd = (event) => {
     event.preventDefault()
+
     const newPerson = {
       name: newName
     }
-    setPersons(persons.concat(newPerson))
+    let yaExiste = false;
+  
+    for(let i=0;i<persons.length;i++){
+      if(persons[i].name===newName){
+        yaExiste=true
+        break
+      }
+    }
+    if(yaExiste){
+      console.log("exists",yaExiste)
+      window.alert(`${newName} already exists`)
+    }else{
+      console.log("not exists")
+      setPersons(persons.concat(newPerson))
+      console.log(persons)
+    }
   }
   return (
     <div>
@@ -30,7 +46,6 @@ const App = () => {
         <div>
           <button type="submit">add</button>
         </div>
-        <div>debug: {newName}</div>
       </form>
       <h2>Numbers</h2>
       <ul>
