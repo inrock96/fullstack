@@ -2,22 +2,26 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 const Country = ({ country, bandera }) => {
     const [weather, setweather] = useState({})
+    const [isLoading,setIsLoading] = useState(true)
     const api_key = process.env.REACT_APP_API_KEY
-    //'724903d0c4ff527a08e6d28598a649a8'
     const params = {
         access_key: api_key,
-        query: country.name
+        query: country.capital
     }
     useEffect(() => {
-        console.log('fetching weather')
-        axios
-        .get('https://api.weatherstack.com/current',{params})
-        .then(response=>{
-            setweather(response.data)
-        })
-        .catch(error=>console.log(error))
-
+        async function fetchMyApi(){
+            const response= await axios
+            .get('http://api.weatherstack.com/current', { params })
+            let currentWeather = await response.data
+            setweather(currentWeather)
+            setIsLoading(false)
+        }
+        fetchMyApi()
     }, [])
+    if(isLoading){
+        return <div>Loading ...
+        </div>
+    }
     return (
         <div>
             <h1>{country.name}</h1>
@@ -32,8 +36,15 @@ const Country = ({ country, bandera }) => {
                 height={60}
                 alt=''
             />
+            <h3>Weather in {country.capital}</h3>
+            <h2>Current temperature in {weather.location.name} is {weather.current.temperature}℃</h2>
+            <img src={weather.current.weather_icons[0]}
+                width={75}
+                height={60}
+                alt=''
+            />
         </div>
-    )
+            )
 }
 
-export default Country
+            export default Country
