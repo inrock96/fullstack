@@ -17,7 +17,6 @@ function App() {
     })
   }, [])
   const handleFilterChange =(event)=>{
-    console.log(event.target.value)
     setfilter(event.target.value)
     const countrylist = countries.filter(country=>{
       return country.name.toLowerCase().includes(event.target.value.toLowerCase())
