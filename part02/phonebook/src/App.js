@@ -1,9 +1,9 @@
-import React, { useState,useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import Filter from './components/Filter'
 import Name from './components/Name'
 import PersonForm from './components/PersonForm'
 import axios from 'axios'
-
+import personService from './services/Person'
 const App = () => {
   const [persons, setPersons] = useState([
   ])
@@ -12,20 +12,32 @@ const App = () => {
   const [newFilter, setFilter] = useState('')
   const [filteredPersons, setFilteredPersons] = useState(persons)
 
-  useEffect(()=>{
+  useEffect(() => {
     console.log('effect')
-    axios
-    .get('http://localhost:3001/persons')
-    .then(response=>{
-      console.log(response)
-      setPersons(response.data)
-      setFilteredPersons(response.data)
-    })
-    
-  },[])
+    personService.getAll()
+      .then(response => {
+        console.log(response)
+        setPersons(response.data)
+        setFilteredPersons(response.data)
+      })
+
+  }, [])
+
+  const deletePerson = async (id) => {
+    if (window.confirm("Do you really want to delete?")) {
+      personService.deletePerson(id)
+        .then(response => {
+          const index = persons.filter(element=>element.id!==id)
+          setPersons(index)
+          setFilteredPersons(index)
+        })
+        .catch(error => console.error(error))
+    }
+  }
 
   const handleChange = (event) => {
     setNewName(event.target.value)
+
   }
   const handleNumber = (event) => {
     setNewNumber(event.target.value)
@@ -50,15 +62,23 @@ const App = () => {
       window.alert(`${newName} already exists`)
     } else {
       console.log("not exists")
-      setPersons(persons.concat(newPerson))
-      console.log(persons)
+      personService.create(newPerson)
+        .then(response => {
+          console.log(response.data)
+          const test = persons.concat(response.data)
+          setPersons(test)
+          setFilteredPersons(test)
+          setFilter('')
+          setNewName('')
+          setNewNumber('')
+        })
     }
   }
   const handleFilter = (event) => {
     setFilter(event.target.value)
-    if (newFilter !== '') {
+    if (event.target.value !== '') {
       const filtered = persons.filter(person => {
-        return person.name.toLowerCase().includes(newFilter.toLowerCase())
+        return person.name.toLowerCase().includes(event.target.value.toLowerCase())
       })
       setFilteredPersons(filtered)
     } else {
@@ -79,7 +99,7 @@ const App = () => {
       <h2>Numbers</h2>
       <ul>
         {
-          filteredPersons.map((person) => <Name key={person.name} person={person}></Name>)
+          filteredPersons.map((person) => <Name key={person.name} deletePerson={() => deletePerson(person.id)} person={person}></Name>)
         }
       </ul>
     </div>
