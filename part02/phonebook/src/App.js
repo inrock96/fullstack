@@ -4,6 +4,7 @@ import Name from './components/Name'
 import PersonForm from './components/PersonForm'
 import axios from 'axios'
 import personService from './services/Person'
+import Message from './components/Message'
 const App = () => {
   const [persons, setPersons] = useState([
   ])
@@ -11,7 +12,8 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setFilter] = useState('')
   const [filteredPersons, setFilteredPersons] = useState(persons)
-
+  const [errorMsg, setError] = useState(null)
+  const [successMsg, setSuccess] = useState(null)
   useEffect(() => {
     console.log('effect')
     personService.getAll()
@@ -19,6 +21,13 @@ const App = () => {
         console.log(response)
         setPersons(response.data)
         setFilteredPersons(response.data)
+      }).catch(error => {
+        setError(
+          `Error at getall ${error}`
+        )
+        setTimeout(() => {
+          setError(null)
+        }, 5000)
       })
 
   }, [])
@@ -27,17 +36,23 @@ const App = () => {
     if (window.confirm("Do you really want to delete?")) {
       personService.deletePerson(id)
         .then(response => {
-          const index = persons.filter(element=>element.id!==id)
+          const index = persons.filter(element => element.id !== id)
           setPersons(index)
           setFilteredPersons(index)
         })
-        .catch(error => console.error(error))
+        .catch(error => {
+          setError(
+            `Error at deletePerson ${error}`
+          )
+          setTimeout(() => {
+            setError(null)
+          }, 5000)
+        })
     }
   }
 
   const handleChange = (event) => {
     setNewName(event.target.value)
-
   }
   const handleNumber = (event) => {
     setNewNumber(event.target.value)
@@ -71,6 +86,12 @@ const App = () => {
           setFilter('')
           setNewName('')
           setNewNumber('')
+          setSuccess(
+            `Person added succesfully`
+          )
+          setTimeout(() => {
+            setSuccess(null)
+          }, 5000)
         })
     }
   }
@@ -87,6 +108,7 @@ const App = () => {
   }
   return (
     <div>
+      <Message error={errorMsg} success={successMsg} ></Message>
       <h1>Phonebook</h1>
       <Filter newName={newFilter} handleChange={handleFilter}></Filter>
       <h2> Add new </h2>
